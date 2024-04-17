@@ -71,13 +71,16 @@ def step_3(D_AB_part, x_alice, y_alice,alice_pk, alice_sk):
     # Réalisée par Alice
     return sqrt((decrypt(D_AB_part, alice_pk, alice_sk)+x_alice**2+y_alice**2) % alice_pk)
      
+
+distance_min  = 8
+
 # SCOPE Alice (ce que Alice voit)
-x_alice = randint(0, 200)
-y_alice = randint(0, 200)
+x_alice = 1#randint(0, 100)
+y_alice = 1#randint(0, 100)
 
 # SCOPE Bob (ce que Bob voit) en plus de alice_pk
-x_bob = randint(0,200)
-y_bob = randint(0,200)
+x_bob = 2#randint(0,100)
+y_bob = 9#randint(0,100)
 
 X_alice, Y_alice = step_1(x_alice, y_alice, alice_pk)
 D_AB_part = step_2(X_alice, Y_alice, x_bob, y_bob, alice_pk)
@@ -86,3 +89,69 @@ D_AB_part = step_2(X_alice, Y_alice, x_bob, y_bob, alice_pk)
 d_ab = step_3(D_AB_part, x_alice, y_alice, alice_pk, alice_sk)
 
 print(f"xA{x_alice}, yA {y_alice}, xB {x_bob}, yB {y_bob}, d {d_ab}, verif {sqrt((x_bob-x_alice)**2+(y_bob-y_alice)**2)}")
+
+# Exercice 4
+
+def get_values_in_range_squared(a: int) -> list:
+    values = list()
+    for i in range(a + 1):
+        for j in range(a + 1):
+            values.append(i * j)
+    return values
+# Bob
+values = get_values_in_range_squared(distance_min)
+
+def get_encrypted_randomized_deltas(distance: int, values: list, pk_alice: int) -> list:
+    encrypted_values = []
+    pk2 = pk_alice * pk_alice
+    for value in values:
+        r = randint(1,100)
+        delta = pow(distance * mod_inverse(encrypt(value, pk_alice), pk2) % pk2, r, pk2)
+        encrypted_values.append(delta)
+    shuffle(encrypted_values)
+    return encrypted_values
+
+# Alice
+def is_too_close(deltas, pk_alice, sk_alice):
+    for delta in deltas:
+        if (v:= decrypt(delta, pk_alice, sk_alice)) == 0:
+            print(f"{v} {delta}")
+            return True
+    return False
+    
+e_v = get_encrypted_randomized_deltas(D_AB_part, values, alice_pk)
+# print(is_too_close(e_v, alice_pk, alice_sk))
+
+# Exercice 7
+
+def get_values_in_range_squared(a: int) -> list:
+    values = list()
+    for i in range(a + 1):
+        for j in range(a + 1):
+            values.append(i * j)
+    return values
+# Bob
+values = get_values_in_range_squared(distance_min)
+
+def get_encrypted_randomized_deltas(distance: int, values: list, pk_alice: int, x_bob, y_bob) -> list:
+    encrypted_values = []
+    pk2 = pk_alice * pk_alice
+    for value in values:
+        r = randint(1,100)
+        delta = pow(distance * mod_inverse(encrypt(value, pk_alice), pk2) % pk2, r, pk2)
+        ONE = encrypt(1, pk_alice)
+        one_minus_delta = ONE * mod_inverse(delta, pk2)
+        encrypted_values.append((delta, pow(one_minus_delta, x_bob, pk2), pow(one_minus_delta, y_bob, pk2)))
+    shuffle(encrypted_values)
+    return encrypted_values
+
+# Alice
+def is_too_close(deltas, pk_alice, sk_alice):
+    for delta in deltas:
+        if (v:= decrypt(delta[0], pk_alice, sk_alice)) == 0:
+            print(f"{v} {delta[0]}")
+            return (True, decrypt(delta[1],pk_alice, sk_alice),decrypt(delta[2],pk_alice, sk_alice))
+    return (False, -1, -1)
+    
+e_v = get_encrypted_randomized_deltas(D_AB_part, values, alice_pk, x_bob, y_bob)
+print(is_too_close(e_v, alice_pk, alice_sk))
