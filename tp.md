@@ -18,3 +18,4 @@ voir fichier `tp.py`
 
 ## Question 3
 
+Du côté de Bob, étant passif, il ne connait que l'encryption de $x_A$ et $y_A$ et ne peut donc guère obtenir plus d'informations utiles. Cependant, du côté d'Alice, en étant malicieuse passive, elle a la possibilité de déterminer une cercle sur lequel se trouve Bob.
