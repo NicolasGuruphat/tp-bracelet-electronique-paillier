@@ -72,7 +72,7 @@ def step_3(D_AB_part, x_alice, y_alice,alice_pk, alice_sk):
     return sqrt((decrypt(D_AB_part, alice_pk, alice_sk)+x_alice**2+y_alice**2) % alice_pk)
      
 
-distance_min  = 8
+distance_min  = 10
 
 # SCOPE Alice (ce que Alice voit)
 x_alice = 1#randint(0, 100)

@@ -32,3 +32,8 @@ Alice déchiffrera tous les éléments jusqu'à tomber sur un 0. Quand ce sera l
 
 Bob étant toujours passif, il ne pourra obtenir aucune information sur Alice. La multiplication par un nombre aléatoire non connu par Alice du côté de Bob en plus du mélange de la liste permet de rendre complètement impossible la récupération d'informations sur la position de Bob du côté d'Alice. La sécurité est donc garantie qu'Alice soit malicieuse passive ou active car la seule chose sur laquelle elle puisse mentir est sa position.
 
+## Question 7
+
+Grâce à la question 4, nous sommes capable de générer un delta qui vaut soit 0, soit une valeur brouillée. En se basant sur cette valeur, nous allons générer une autre valeur qui correspondra au calcul de la distance de Bob multiplié par 1 - delta. Quand delta vaut 0, la valeur ne sera pas brouillé. Quand delta vaut autre chose, la valeur sera brouillé. De cette manière, pour toutes les distances qui sont supérieur à 100 mètres, la multiplication brouillera la position de Bob. La seule valeur qui ne sera pas brouillée sera lorsque le delta sera égal à 0.
+
+En pratique, au lieu de renvoyé une valeur simple, Bob renvoie donc un tuple qui contient dans le premier élément le delta chiffré et dans le deuxième la position de Bob chiffrée (soit non brouillé si delta égal à 0, soit brouillé dans tous les autres cas).
